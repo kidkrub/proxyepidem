@@ -5,7 +5,13 @@ import https from "https";
 
 const app = express();
 
-app.use(cors());
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+
+app.use(
+  cors({
+    origin: ["http://localhost:4200", "https://epidem-clr.firebaseapp.com/"],
+  })
+);
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
@@ -46,6 +52,6 @@ app.get("/token", async (req: Request, res: Response) => {
   }
 });
 
-app.listen(3000, "0.0.0.0", () => {
-  console.log(`Server ready at port 3000`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server ready at port ${port}`);
 });
