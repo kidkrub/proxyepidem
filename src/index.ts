@@ -9,7 +9,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 app.use(
   cors({
-    origin: ["http://localhost:4200", "https://epidem-clr.firebaseapp.com/"],
+    origin: ["http://localhost:4200", "https://epidem-clr.firebaseapp.com"],
   })
 );
 app.use(express.json());
@@ -49,6 +49,7 @@ app.get("/token", async (req: Request, res: Response) => {
       console.log(err);
       res.status(parseInt(err.response.data.code)).send(err.response.data);
     });
+  console.log(result);
   if (result) {
     res.send(result.data);
   }
