@@ -40,11 +40,13 @@ app.get("/token", async (req: Request, res: Response) => {
     url += `&${key}=${value}`;
   }
   url = url.replace(/&/, "");
+  console.log(url);
   result = await axios
     .get(url, {
       httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     })
     .catch((err) => {
+      console.log(err);
       res.status(parseInt(err.response.data.code)).send(err.response.data);
     });
   if (result) {
