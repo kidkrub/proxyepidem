@@ -10,7 +10,9 @@ const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 app.use(
   cors({
-    origin: process.env.ALLOWED_HOST ? process.env.ALLOWED_HOST : "*",
+    origin: process.env.ALLOWED_HOST
+      ? process.env.ALLOWED_HOST.split(" ")
+      : "*",
   })
 );
 app.use(express.json());
@@ -20,14 +22,14 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/epidem/api/*", async (req: Request, res: Response) => {
-  let url = `https://epidemcenter.moph.go.th${req.originalUrl}`;
+  let url = `${process.env.API_TARGET}${req.originalUrl}`;
   console.log(url);
   const result = await axios.get(url);
   res.json(result.data);
 });
 
 app.post("/epidem/api/*", async (req: Request, res: Response) => {
-  let url = `https://epidemcenter.moph.go.th${req.originalUrl}`;
+  let url = `${process.env.API_TARGET}${req.originalUrl}`;
   console.log(url);
   let headers = {
     authorization: req.headers.authorization ? req.headers.authorization : "",
@@ -47,7 +49,7 @@ app.post("/epidem/api/*", async (req: Request, res: Response) => {
 });
 
 app.get("/token", async (req: Request, res: Response) => {
-  let url = `https://cvp1.moph.go.th${req.originalUrl}`;
+  let url = `${process.env.AUTH_TARGET}${req.originalUrl}`;
   let result;
   console.log(url);
   try {
