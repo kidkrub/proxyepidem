@@ -21,22 +21,13 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/epidem/api/*", async (req: Request, res: Response) => {
   let url = `https://epidemcenter.moph.go.th${req.originalUrl}`;
   console.log(url);
-  let result;
-  if (req.query.table_name) {
-    result = await axios.get(
-      `https://epidemcenter.moph.go.th/epidem/api/LookupTable?table_name=${req.query.table_name}`
-    );
-  } else {
-    result = await axios.get(
-      "https://epidemcenter.moph.go.th/epidem/api/LookupTable"
-    );
-  }
-
+  const result = await axios.get(url);
   res.json(result.data);
 });
 
 app.post("/epidem/api/*", async (req: Request, res: Response) => {
   let url = `https://epidemcenter.moph.go.th${req.originalUrl}`;
+  console.log(url);
   let headers = {
     authorization: req.headers.authorization ? req.headers.authorization : "",
   };
