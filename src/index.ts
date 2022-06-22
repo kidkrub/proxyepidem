@@ -18,7 +18,9 @@ app.get("/", (req: Request, res: Response) => {
   return res.send("Server is running");
 });
 
-app.get("/epidem/api/LookupTable", async (req: Request, res: Response) => {
+app.get("/epidem/api/*", async (req: Request, res: Response) => {
+  let url = `https://epidemcenter.moph.go.th${req.originalUrl}`;
+  console.log(url);
   let result;
   if (req.query.table_name) {
     result = await axios.get(
@@ -33,23 +35,36 @@ app.get("/epidem/api/LookupTable", async (req: Request, res: Response) => {
   res.json(result.data);
 });
 
-app.get("/token", async (req: Request, res: Response) => {
-  let url = "https://cvp1.moph.go.th/token?";
+app.post("/epidem/api/*", async (req: Request, res: Response) => {
+  let url = `https://epidemcenter.moph.go.th${req.originalUrl}`;
+  let headers = {
+    authorization: req.headers.authorization ? req.headers.authorization : "",
+  };
   let result;
-  for (const [key, value] of Object.entries(req.query)) {
-    url += `&${key}=${value}`;
+  try {
+    result = await axios.post(url, req.body, { headers: headers });
+  } catch (error: any) {
+    // console.log(error);
+    res
+      .status(parseInt(error.response.data.MessageCode))
+      .send(error.response.data);
   }
-  url = url.replace(/&/, "");
+  if (result) {
+    res.send(result.data);
+  }
+});
+
+app.get("/token", async (req: Request, res: Response) => {
+  let url = `https://cvp1.moph.go.th${req.originalUrl}`;
+  let result;
   console.log(url);
-  result = await axios
-    .get(url, {
+  try {
+    result = await axios.get(url, {
       httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(parseInt(err.response.data.code)).send(err.response.data);
     });
-  console.log(result);
+  } catch (error: any) {
+    res.status(parseInt(error.response.data.code)).send(error.response.data);
+  }
   if (result) {
     res.send(result.data);
   }
