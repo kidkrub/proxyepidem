@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import axios from "axios";
@@ -9,7 +10,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 app.use(
   cors({
-    origin: ["http://localhost:4200", "https://epidem-clr.firebaseapp.com"],
+    origin: process.env.ALLOWED_HOST ? process.env.ALLOWED_HOST : "*",
   })
 );
 app.use(express.json());
